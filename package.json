@@ -1,0 +1,77 @@
+{
+  "name": "dsh-workbuddy-token",
+  "version": "0.1.2",
+  "description": "DSH 输入框胶囊:WorkBuddy 剩余积分按「当前模型 × 当前时段」折后倍率换算的 token 估算(只读,直连上游,零硬编码数据)。",
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./client": "./lib/client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./locale/*.json": "./locale/*.json",
+    "./package.json": "./package.json"
+  },
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0",
+    "dsh": ">=0.2.0-rc.1 <0.3.0-0"
+  },
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "workbuddy",
+    "credits"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "test": "node test/verify.mjs"
+  },
+  "dependencies": {
+    "@deepseek-ai/schemastery": "3.18.4"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.0",
+    "@types/react": "~18.3.31",
+    "react": "^18.3.1",
+    "tsdown": "^0.22.2",
+    "typescript": "^5.9.3"
+  },
+  "files": [
+    "lib",
+    "locale",
+    "cordis.patch.yml",
+    "install.mjs",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-slots",
+        "@deepseek-ai/dsh-client-locale"
+      ],
+      "platform": "web"
+    },
+    "compatibility": {
+      "dsh": ">=0.2.0-rc.1 <0.3.0-0",
+      "dshReleases": {
+        "0.2.0-rc.1": "compatible",
+        "0.2.0-rc.2": "compatible",
+        "0.2.1-alpha.5": "compatible",
+        "0.2.1-rc.1": "compatible",
+        "0.2.1-rc.2": "compatible"
+      }
+    }
+  },
+  "license": "MIT",
+  "author": "xsdao"
+}

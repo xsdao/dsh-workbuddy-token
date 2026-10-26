@@ -1,0 +1,6 @@
+# dsh-workbuddy-token bundle patch: read-only credits capsule near the composer.
+# The row name resolves from the profile's own node_modules where
+# `dsh plugin --profile <profile> add <path>` installed this package.
+- insert:
+    - id: dsh-workbuddy-token
+      name: dsh-workbuddy-token
