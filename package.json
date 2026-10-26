@@ -73,5 +73,13 @@
     }
   },
   "license": "MIT",
-  "author": "xsdao"
+  "author": "xsdao",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xsdao/dsh-workbuddy-token.git"
+  },
+  "homepage": "https://github.com/xsdao/dsh-workbuddy-token#readme",
+  "bugs": {
+    "url": "https://github.com/xsdao/dsh-workbuddy-token/issues"
+  }
 }

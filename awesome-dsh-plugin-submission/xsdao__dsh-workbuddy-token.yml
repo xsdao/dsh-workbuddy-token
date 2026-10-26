@@ -1,0 +1,11 @@
+# Awesome DSH Plugin 收录草稿(本地镜像)。
+# 正式提交:向 awesome-dsh-plugin/awesome-dsh-plugin 发 PR,新增
+# data/plugins/xsdao__dsh-workbuddy-token.yml,内容与本文件一致。
+# 前置(CI 自动检查):仓库满 1 天;package.json 已声明 dsh.bundle ✓;
+# 仓库已打 dsh-plugin topic ✓。规范来源:该仓库 contributing.md。
+url: https://github.com/xsdao/dsh-workbuddy-token
+name: xsdao/dsh-workbuddy-token
+category: usage
+description:
+  en: Adds a read-only capsule beside the DSH composer that converts remaining WorkBuddy credits into a token estimate for the session's current model at the current period's effective multiplier, judging promotion windows live from the upstream config, with floating-rate ranges, stale-cache and credential-error states, direct-to-upstream requests and no hardcoded model data.
+  zh: 在 DSH 输入框旁显示只读胶囊，把 WorkBuddy 剩余积分按当前模型与当前时段的折后有效倍率换算为 token 估算，时段活动窗口每次实时判定，支持浮动倍率区间、缓存降级与凭据异常三态显示，请求直连上游，零硬编码数据。
