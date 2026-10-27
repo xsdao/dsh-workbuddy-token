@@ -47,7 +47,7 @@ export interface StatusView {
   tokensEstimate?: number | { min: number, max: number }
   fetchedAtMs?: number
   model?: string
-  modelStatus?: 'ok' | 'floating' | 'missing' | 'unknown'
+  modelStatus?: 'ok' | 'floating' | 'missing' | 'foreign' | 'unknown'
   creditsText?: string
   multiplierText?: string
   tokensText?: string
@@ -119,6 +119,8 @@ export function apply(ctx: HostContext, config: PluginConfig = {}) {
     creditsFailed: false,
     busy: false,
   }
+  // 进程内见过的花名册 id:出现过又消失 = 真下架;从未见过 = 外部模型,不猜不报错
+  const seenModels = new Set<string>()
   let creditsFailures = 0
   let configFailures = 0
 
@@ -149,7 +151,9 @@ export function apply(ctx: HostContext, config: PluginConfig = {}) {
       if (credential === undefined) return
     }
     try {
-      state.roster = { roster: (await fetchRoster(state.credential!)).roster, atMs: Date.now() }
+      const fetched = await fetchRoster(state.credential!)
+      for (const model of fetched.roster.models) seenModels.add(model.id)
+      state.roster = { roster: fetched.roster, atMs: Date.now() }
       configFailures = 0
       state.authRejected = false
     } catch (error) {
@@ -212,7 +216,10 @@ export function apply(ctx: HostContext, config: PluginConfig = {}) {
     const roster = state.roster
     if (roster === undefined) { view.modelStatus = 'unknown'; return view }
     const entry = roster.roster.models.find(candidate => candidate.id === modelId)
-    if (entry === undefined) { view.modelStatus = 'missing'; return view }
+    if (entry === undefined) {
+      view.modelStatus = modelId !== '' && seenModels.has(modelId) ? 'missing' : 'foreign'
+      return view
+    }
     const promotion = activePromotion(roster.roster.promotions, modelId, now)
     const factor = promotion?.factor ?? 1
     if (promotion?.periodKey !== undefined) view.period = promotion.periodKey

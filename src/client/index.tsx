@@ -15,7 +15,7 @@ interface StatusView {
   credits?: number
   period?: string
   model?: string
-  modelStatus?: 'ok' | 'floating' | 'missing' | 'unknown'
+  modelStatus?: 'ok' | 'floating' | 'missing' | 'foreign' | 'unknown'
   creditsText?: string
   multiplierText?: string
   tokensText?: string
@@ -134,6 +134,10 @@ function Capsule(props: {
     top = <span className="dswbt-warn">{t('invalidCredential')}</span>
     if (doc?.creditsText !== undefined) sub = <span>{doc.creditsText} {t('creditsUnit')}</span>
     tooltip = `${t('invalidCredentialLong')}\n${t('refreshHint')}`
+  } else if (doc?.modelStatus === 'foreign') {
+    // 外部模型(不在 WorkBuddy 花名册):不猜倍率也不报下架,像旧插件一样只显示剩余积分
+    top = doc?.creditsText !== undefined ? <span>{doc.creditsText} {t('creditsUnit')}</span> : <span>{t('loading')}</span>
+    sub = <span className="dswbt-dim">{t('foreignHint')}</span>
   } else {
     const parts: React.ReactNode[] = []
     if (doc?.model !== undefined) parts.push(<span key="model">{doc.model}</span>)
@@ -143,15 +147,16 @@ function Capsule(props: {
     if (doc?.period !== undefined) parts.push(<span key="period" className="dswbt-dim">{t(`period.${doc.period}`)}</span>)
     top = parts.length > 0 ? parts : <span>{t('loading')}</span>
 
+    const creditsPrefix = doc?.creditsText !== undefined ? `${doc.creditsText} ${t('creditsUnit')} · ` : ''
     if (doc?.tokensText !== undefined && doc.modelStatus !== 'missing') {
-      sub = <span>≈ {doc.tokensText} {t('tokensUnit')}{t('estimateSuffix')}</span>
+      sub = <span>{creditsPrefix}≈ {doc.tokensText} {t('tokensUnit')}{t('estimateSuffix')}</span>
     } else if (doc?.creditsText !== undefined) {
       sub = <span>{doc.creditsText} {t('creditsUnit')}{doc.modelStatus === 'missing' ? ` · ${t('modelDelisted')}` : ''}</span>
     }
-    if (state === 'stale' && doc?.staleMinutes !== undefined) {
-      tooltip = `${t('stale', { min: doc.staleMinutes })}\n${t('refreshHint')}`
-      sub = <>{sub}<span className="dswbt-dim"> · {t('staleShort', { min: doc.staleMinutes })}</span></>
-    }
+  }
+  if (state === 'stale' && doc?.staleMinutes !== undefined) {
+    tooltip = `${t('stale', { min: doc.staleMinutes })}\n${t('refreshHint')}`
+    sub = <>{sub}<span className="dswbt-dim"> · {t('staleShort', { min: doc.staleMinutes })}</span></>
   }
 
   return (

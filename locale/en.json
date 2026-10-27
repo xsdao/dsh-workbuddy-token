@@ -20,5 +20,6 @@
   "tokensUnit": "tokens",
   "estimateSuffix": " (est.)",
   "stale": "Upstream refresh failed; showing cache from {min} min ago",
-  "staleShort": "{min}m ago"
+  "staleShort": "{min}m ago",
+  "foreignHint": "Current model does not use WorkBuddy credits"
 }

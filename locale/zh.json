@@ -20,5 +20,6 @@
   "tokensUnit": "tokens",
   "estimateSuffix": "(估算)",
   "stale": "上游刷新失败,显示 {min} 分钟前的缓存",
-  "staleShort": "{min} 分钟前"
+  "staleShort": "{min} 分钟前",
+  "foreignHint": "当前模型不走 WorkBuddy 积分"
 }

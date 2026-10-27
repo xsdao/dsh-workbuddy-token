@@ -45,9 +45,9 @@ pnpm test              # node test/verify.mjs — asserts conversion/window/pars
 
 ## Three display states
 
-- Normal: live data; floating-rate models (e.g. `auto`) show a range (min–max of known multipliers in the current roster)
+- Normal: live data; remaining credits stay on the second line (WorkBuddy models add the token estimate); floating-rate models (e.g. `auto`) show a range
 - Stale: on upstream failure, shows the last successful cache labeled "X min ago"
-- Error: rejected credentials (401/403) prompt re-login; a delisted model shows "delisted" while credits stay live
+- Error: rejected credentials (401/403) prompt re-login; a model that vanished from the roster shows "delisted" while credits stay live; a model that never belonged to the WorkBuddy roster shows credits only, with no guessed rate
 
 ## License
 
