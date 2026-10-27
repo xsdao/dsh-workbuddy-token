@@ -10,7 +10,7 @@
 // 安全:只读凭据;输出只有路径与失败原因,绝不打印 token/uid。
 
 import { spawnSync } from 'node:child_process'
-import { copyFileSync, existsSync, readFileSync, rmSync } from 'node:fs'
+import { copyFileSync, existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { dirname, join, normalize, resolve, sep } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -61,8 +61,17 @@ if (!Array.isArray(bundles)) {
 pkg.dependencies ??= {}
 pkg.dependencies[PLUGIN_NAME] = pathToFileURL(PLUGIN_ROOT).href
 if (!bundles.includes(PLUGIN_NAME)) bundles.push(PLUGIN_NAME)
+// 必须落盘:不写回的话后面 pnpm 读到的还是磁盘上的旧 package.json
+writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
+console.log(`注册: dependencies[${PLUGIN_NAME}] = ${pkg.dependencies[PLUGIN_NAME]}`)
 
 // 3. pnpm 安装(与 DSH 自带插件管理器同款动作)
+const sourceVersion = JSON.parse(readFileSync(join(PLUGIN_ROOT, 'package.json'), 'utf8')).version
+const installedVersionOf = () => {
+  try {
+    return JSON.parse(readFileSync(join(profileDir, 'node_modules', PLUGIN_NAME, 'package.json'), 'utf8')).version
+  } catch { return '(missing)' }
+}
 const installed = spawnSync('pnpm', ['install'], { cwd: profileDir, stdio: 'inherit', shell: true })
 if (installed.status !== 0) {
   console.error(`✗ pnpm install 失败(退出码 ${installed.status});package.json 已改,可用备份回滚`)
@@ -70,10 +79,8 @@ if (installed.status !== 0) {
 }
 
 // pnpm 对未变的 file: 依赖不重拷内容;版本对不上说明装的是旧副本,删掉重装一次
-const sourceVersion = JSON.parse(readFileSync(join(PLUGIN_ROOT, 'package.json'), 'utf8')).version
-const installedVersion = JSON.parse(readFileSync(join(profileDir, 'node_modules', PLUGIN_NAME, 'package.json'), 'utf8')).version
-if (sourceVersion !== installedVersion) {
-  console.log(`已装副本 ${installedVersion} 落后于源 ${sourceVersion},重拷…`)
+if (sourceVersion !== installedVersionOf()) {
+  console.log(`已装副本 ${installedVersionOf()} 落后于源 ${sourceVersion},重拷…`)
   rmSync(join(profileDir, 'node_modules', PLUGIN_NAME), { recursive: true, force: true })
   const retry = spawnSync('pnpm', ['install'], { cwd: profileDir, stdio: 'inherit', shell: true })
   if (retry.status !== 0) {
@@ -81,6 +88,12 @@ if (sourceVersion !== installedVersion) {
     process.exit(retry.status ?? 1)
   }
 }
+// 终检:版本仍不一致说明装错了树,自检项不区分版本,这里必须硬失败
+if (sourceVersion !== installedVersionOf()) {
+  console.error(`✗ 安装后版本仍不一致(源 ${sourceVersion} vs 已装 ${installedVersionOf()}),检查 profile 依赖是否指向本目录`)
+  process.exit(1)
+}
+console.log(`✓ 已装副本版本一致(${sourceVersion})`)
 
 // 4. 自检(全部只读)。用 profile 里真实落位的副本,而不是源目录。
 const lib = async relativePath => import(pathToFileURL(join(profileDir, 'node_modules', PLUGIN_NAME, relativePath)).href)
