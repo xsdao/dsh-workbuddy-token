@@ -1,6 +1,6 @@
 {
   "name": "dsh-workbuddy-token",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "DSH 输入框胶囊:WorkBuddy 剩余积分按「当前模型 × 当前时段」折后倍率换算的 token 估算(只读,直连上游,零硬编码数据)。",
   "type": "module",
   "main": "lib/index.js",

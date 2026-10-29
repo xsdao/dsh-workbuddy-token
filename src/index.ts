@@ -17,7 +17,7 @@ export const Config = z.object({
   creditsIntervalSec: z.number().default(300).description('剩余积分刷新间隔(秒,最小 60)'),
   configIntervalSec: z.number().default(7200).description('模型/活动配置刷新间隔(秒,最小 600)'),
   cpaDir: z.string().default('').description('CPA 凭据目录;留空 = ~/.cli-proxy-api'),
-  baseTokensPerCredit: z.number().default(1000).description('基准费率:x1 倍率下 1 积分约可换的 token 数(估算系数,可校准)'),
+  baseTokensPerCredit: z.number().default(50000).description('基准费率:x1 倍率下 1 积分对应的 token 数(实测校准值,可再调)'),
 })
 
 export interface PluginConfig {
@@ -107,7 +107,7 @@ export function apply(ctx: HostContext, config: PluginConfig = {}) {
   const creditsIntervalMs = Math.max(60, Math.floor(config.creditsIntervalSec ?? 300)) * 1000
   const configIntervalMs = Math.max(600, Math.floor(config.configIntervalSec ?? 7200)) * 1000
   const cpaDir = (config.cpaDir ?? '').trim() !== '' ? (config.cpaDir ?? '').trim() : defaultCpaDir()
-  const baseTokensPerCredit = Number.isFinite(config.baseTokensPerCredit) && (config.baseTokensPerCredit ?? 0) > 0 ? config.baseTokensPerCredit! : 1000
+  const baseTokensPerCredit = Number.isFinite(config.baseTokensPerCredit) && (config.baseTokensPerCredit ?? 0) > 0 ? config.baseTokensPerCredit! : 50000
 
   const state = {
     credits: undefined as { total: number, atMs: number } | undefined,

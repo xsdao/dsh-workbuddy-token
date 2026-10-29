@@ -23,7 +23,7 @@ DSH(DeepSeek Harness)插件:在输入框旁显示 WorkBuddy 剩余积分按「�
 | `creditsIntervalSec` | 300 | 积分刷新间隔(秒,最小 60) |
 | `configIntervalSec` | 7200 | 模型/活动配置刷新间隔(秒,最小 600) |
 | `cpaDir` | `~/.cli-proxy-api` | CPA 凭据目录 |
-| `baseTokensPerCredit` | 1000 | 基准费率:x1 倍率下 1 积分约换的 token 数(估算系数;官方未公布,可用 CPA 用量记录校准) |
+| `baseTokensPerCredit` | 50000 | 基准费率:x1 倍率下 1 积分对应的 token 数(2026-10-29 用真实用量实测校准:58.96M token ↔ 201.8 积分,加权倍率 x0.169;官方未公布,后续可再校准) |
 
 ## 安装到 DSH Desktop profile
 

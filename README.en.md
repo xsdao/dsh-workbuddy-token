@@ -34,7 +34,7 @@ Note: DSH Desktop profiles are managed exclusively by the Electron application, 
 | `creditsIntervalSec` | 300 | Credits refresh interval (seconds, min 60) |
 | `configIntervalSec` | 7200 | Model/promotion config refresh interval (seconds, min 600) |
 | `cpaDir` | `~/.cli-proxy-api` | CPA credential directory |
-| `baseTokensPerCredit` | 1000 | Base rate: approximate tokens per credit at x1 multiplier (estimation coefficient; official value unpublished — calibrate against CPA usage records) |
+| `baseTokensPerCredit` | 50000 | Base rate: tokens per credit at x1 multiplier (calibrated 2026-10-29 against real usage: 58.96M tokens ↔ 201.8 credits at weighted x0.169; official value unpublished — re-calibrate as needed) |
 
 ## Build and test
 
